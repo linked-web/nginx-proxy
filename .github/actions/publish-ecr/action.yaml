@@ -1,0 +1,40 @@
+name: Build and Publish
+description: Builds docker image and pushes to ECR repository
+inputs:
+  aws-account-id:
+    description: The AWS account id
+    required: true
+  aws-region:
+    description: The AWS region
+    required: true
+  openid-role:
+    description: The name of the OpenID role
+    required: true
+  dockerfile-path:
+    description: Path to the Dockerfile to build docker image from
+    required: true
+  ecr-repository:
+    description: Name of the ECR repository
+    required: true
+  ecr-tag:
+    description: Tag name to use on the image
+runs:
+  using: 'composite'
+  steps:
+    - name: Get AWS Permissions
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::${{ inputs.aws-account-id }}:role/${{ inputs.openid-role }}
+        aws-region: ${{ inputs.aws-region }}
+    - name: ECR Login
+      shell: bash
+      run: aws ecr get-login-password --region ${{ inputs.aws-region }} | docker login --username AWS --password-stdin ${{ inputs.aws-account-id }}.dkr.ecr.${{ inputs.aws-region }}.amazonaws.com
+    - name: Build Docker Image
+      shell: bash
+      run: docker build -f ${{ inputs.dockerfile-path }} -t ${{ inputs.ecr-repository }}:${{ inputs.ecr-tag }} .
+    - name: Tag Docker Image
+      shell: bash
+      run: docker tag ${{ inputs.ecr-repository }}:${{ inputs.ecr-tag }} ${{ inputs.aws-account-id }}.dkr.ecr.${{ inputs.aws-region }}.amazonaws.com/${{ inputs.ecr-repository }}:${{ inputs.ecr-tag }}
+    - name: Push To ECR
+      shell: bash
+      run: docker push ${{ inputs.aws-account-id }}.dkr.ecr.${{ inputs.aws-region }}.amazonaws.com/${{ inputs.ecr-repository }}:${{ inputs.ecr-tag }}

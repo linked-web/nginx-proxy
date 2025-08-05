@@ -1,0 +1,31 @@
+name: Deploy Nginx Proxy
+on:
+  push:
+    branches:
+      - 'main'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build App
+        run: docker build -f ./Dockerfile -t linked-web-proxy .
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Push App to ECR
+        uses: ./.github/actions/publish-ecr
+        with:
+          aws-account-id: '055523997114'
+          aws-region: 'us-east-2'
+          openid-role: 'LinkedWebApp'
+          dockerfile-path: './Dockerfile'
+          ecr-repository: 'linked-web-proxy'
+          ecr-tag: 'production'
