@@ -3,7 +3,7 @@ LABEL maintainer="bryanberk.com"
 
 COPY ./default.conf.tpl /etc/nginx/default.conf.tpl
 COPY ./ssl.conf.tpl /etc/nginx/ssl.conf.tpl
-COPY ./run.sh /run.sh
+COPY ./run.sh /usr/local/bin/run.sh
 
 ENV LISTEN_PORT=80
 ENV APP_HOST=app
@@ -26,7 +26,8 @@ RUN mkdir -p /vol/static && \
     chown nginx:nginx /etc/nginx/conf.d/default.conf && \
     touch /etc/nginx/conf.d/ssl.conf && \
     chown nginx:nginx /etc/nginx/conf.d/ssl.conf && \
-    chmod +x /run.sh
+    chmod +x /usr/local/bin/run.sh && \
+    chown nginx:nginx /usr/local/bin/run.sh
 
 VOLUME /vol/static
 VOLUME /etc/letsencrypt
@@ -35,4 +36,4 @@ VOLUME /var/www/certbot
 
 USER nginx
 
-CMD ["/run.sh"]
+CMD ["/usr/local/bin/run.sh"]
