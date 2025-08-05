@@ -6,19 +6,32 @@ COPY ./ssl.conf.tpl /etc/nginx/ssl.conf.tpl
 COPY ./run.sh /run.sh
 
 ENV LISTEN_PORT=80
+ENV APP_HOST=app
 ENV APP_PORT=8000
 ENV DOMAIN=""
 ENV EMAIL=""
+ENV SSL_MODE="initial"
 
 USER root
 
-RUN touch /etc/nginx/conf.d/default.conf && \
+RUN mkdir -p /vol/static && \
+    chmod 755 /vol/static && \
+    mkdir -p /etc/letsencrypt && \
+    chmod 755 /etc/letsencrypt && \
+    mkdir -p /var/lib/letsencrypt && \
+    chmod 755 /var/lib/letsencrypt && \
+    mkdir -p /var/www/certbot && \
+    chmod 755 /var/www/certbot && \
+    touch /etc/nginx/conf.d/default.conf && \
+    chown nginx:nginx /etc/nginx/conf.d/default.conf && \
     touch /etc/nginx/conf.d/ssl.conf && \
-    chown -R nginx:nginx /etc/nginx/conf.d && \
+    chown nginx:nginx /etc/nginx/conf.d/ssl.conf && \
     chmod +x /run.sh
 
 VOLUME /vol/static
 VOLUME /etc/letsencrypt
+VOLUME /var/lib/letsencrypt
+VOLUME /var/www/certbot
 
 USER nginx
 
