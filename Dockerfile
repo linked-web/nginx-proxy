@@ -28,4 +28,4 @@ VOLUME /var/lib/letsencrypt
 
 USER nginx
 
-CMD ["/run.sh"]
+CMD ["sh", "/run.sh"]
