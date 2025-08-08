@@ -1,4 +1,4 @@
-FROM nginxinc/nginx-unprivileged:1-alpine
+FROM nginx:alpine
 LABEL maintainer="bryanberk.com"
 
 COPY ./default.conf.tpl /etc/nginx/default.conf.tpl
@@ -12,17 +12,6 @@ ENV DOMAIN=""
 ENV EMAIL=""
 ENV AWS_S3_BUCKET=""
 
-USER root
-
-RUN touch /etc/nginx/conf.d/default.conf && \
-    chown nginx:nginx /etc/nginx/conf.d/default.conf && \
-    touch /etc/nginx/conf.d/ssl.conf && \
-    chown nginx:nginx /etc/nginx/conf.d/ssl.conf && \
-    chmod +x /run.sh
-
-VOLUME /etc/letsencrypt
-VOLUME /var/lib/letsencrypt
-
-USER nginx
+RUN chmod +x /run.sh
 
 CMD ["sh", "/run.sh"]
