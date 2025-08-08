@@ -21,9 +21,9 @@ server {
     location /static/ {
         proxy_pass https://${AWS_S3_BUCKET}.s3.amazonaws.com;
         proxy_set_header Host "${AWS_S3_BUCKET}.s3.amazonaws.com";
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        # proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $$scheme;
+        proxy_set_header X-Real-IP $$remote_addr;
         
         expires 1y;
         add_header Cache-Control "public, immutable";
@@ -32,9 +32,9 @@ server {
     location /media/ {
         proxy_pass https://${AWS_S3_BUCKET}.s3.amazonaws.com;
         proxy_set_header Host "${AWS_S3_BUCKET}.s3.amazonaws.com";
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        # proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $$scheme;
+        proxy_set_header X-Real-IP $$remote_addr;
         
         expires 30d;
         add_header Cache-Control "public";
@@ -46,10 +46,10 @@ server {
 
     location /health/ {
         proxy_pass http://${APP_HOST}:${APP_PORT};
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        # proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host $$host;
+        proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $$scheme;
+        proxy_set_header X-Real-IP $$remote_addr;
         proxy_redirect off;
         
         add_header Cache-Control "no-cache, no-store, must-revalidate";
@@ -59,10 +59,10 @@ server {
 
     location / {
         proxy_pass http://${APP_HOST}:${APP_PORT};
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        # proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host $$host;
+        proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $$scheme;
+        proxy_set_header X-Real-IP $$remote_addr;
         proxy_redirect off;
         
         proxy_connect_timeout 60s;
