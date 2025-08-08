@@ -15,9 +15,9 @@ ENV AWS_S3_BUCKET=""
 USER root
 
 RUN mkdir -p /etc/letsencrypt && \
-    chmod 755 /etc/letsencrypt && \
+    chown nginx:nginx /etc/letsencrypt && \
     mkdir -p /var/lib/letsencrypt && \
-    chmod 755 /var/lib/letsencrypt && \
+    chown nginx:nginx /var/lib/letsencrypt && \
     touch /etc/nginx/conf.d/default.conf && \
     chown nginx:nginx /etc/nginx/conf.d/default.conf && \
     touch /etc/nginx/conf.d/ssl.conf && \
