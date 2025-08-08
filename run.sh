@@ -33,8 +33,17 @@ echo "  AWS_S3_BUCKET: $AWS_S3_BUCKET"
 echo "  APP_HOST: $APP_HOST"
 echo "  APP_PORT: $APP_PORT"
 
-envsubst < /etc/nginx/default.conf.tpl > /etc/nginx/conf.d/default.conf
-envsubst < /etc/nginx/ssl.conf.tpl > /etc/nginx/conf.d/ssl.conf
+# Check what's in the default nginx configuration
+echo "=== Default nginx configuration ==="
+ls -la /etc/nginx/
+echo "=== Default nginx.conf ==="
+head -20 /etc/nginx/nginx.conf
+echo "=== Default conf.d directory ==="
+ls -la /etc/nginx/conf.d/
+
+# Use envsubst with specific variables to avoid substituting nginx variables
+envsubst '${DOMAIN} ${AWS_S3_BUCKET} ${APP_HOST} ${APP_PORT} ${LISTEN_PORT}' < /etc/nginx/default.conf.tpl > /etc/nginx/conf.d/default.conf
+envsubst '${DOMAIN} ${AWS_S3_BUCKET} ${APP_HOST} ${APP_PORT} ${LISTEN_PORT}' < /etc/nginx/ssl.conf.tpl > /etc/nginx/conf.d/ssl.conf
 
 echo "Generated configuration files:"
 echo "=== default.conf ==="
