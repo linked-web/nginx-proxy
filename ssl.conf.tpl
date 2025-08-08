@@ -18,12 +18,9 @@ server {
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
-    real_ip_header X-Forwarded-For;
-    real_ip_recursive on;
-
     location /static/ {
         proxy_pass https://${AWS_S3_BUCKET}.s3.amazonaws.com;
-        proxy_set_header Host ${AWS_S3_BUCKET}.s3.amazonaws.com;
+        proxy_set_header Host "${AWS_S3_BUCKET}.s3.amazonaws.com";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -34,7 +31,7 @@ server {
 
     location /media/ {
         proxy_pass https://${AWS_S3_BUCKET}.s3.amazonaws.com;
-        proxy_set_header Host ${AWS_S3_BUCKET}.s3.amazonaws.com;
+        proxy_set_header Host "${AWS_S3_BUCKET}.s3.amazonaws.com";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
