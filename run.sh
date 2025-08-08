@@ -36,6 +36,12 @@ echo "  APP_PORT: $APP_PORT"
 envsubst < /etc/nginx/default.conf.tpl > /etc/nginx/conf.d/default.conf
 envsubst < /etc/nginx/ssl.conf.tpl > /etc/nginx/conf.d/ssl.conf
 
+echo "Generated configuration files:"
+echo "=== default.conf ==="
+cat /etc/nginx/conf.d/default.conf
+echo "=== ssl.conf ==="
+cat /etc/nginx/conf.d/ssl.conf
+
 # Test nginx configuration
 echo "Testing nginx configuration..."
 nginx -t
